@@ -13,30 +13,37 @@ namespace GymAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoriaController : ControllerBase
+    public class EvaluacionMensualController : ControllerBase
     {
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Categoria>>> Get()
+        public async Task<ActionResult<IEnumerable<EvaluacionMensual>>> Get()
         {
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = "SELECT ID, Nombre FROM Categorias;";
+            string sql = "SELECT * FROM EvaluacionMensual;";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
             SqlDataReader reader;
             connection.Open();
 
-            List<Categoria> categorias = new List<Categoria>();
+            List<EvaluacionMensual> evaluacionMensuals = new List<EvaluacionMensual>();
             try
             {
                 reader = await cmd.ExecuteReaderAsync();
-                Categoria categoria;
+                EvaluacionMensual evaluacionMensual;
                 while (reader.Read())
                 {
-                    categoria = new Categoria();
-                    categoria.ID = int.Parse(reader[0].ToString());
-                    categoria.Nombre = reader[1].ToString();
-                    categorias.Add(categoria);
+                    evaluacionMensual = new EvaluacionMensual();
+                    evaluacionMensual.ID = int.Parse(reader[0].ToString());
+                    evaluacionMensual.IDCliente = int.Parse(reader[1].ToString());
+                    evaluacionMensual.IDMes = int.Parse(reader[2].ToString());
+                    evaluacionMensual.Calorias = int.Parse(reader[3].ToString());
+                    evaluacionMensual.Altura = float.Parse(reader[4].ToString());
+                    evaluacionMensual.Peso = float.Parse(reader[5].ToString());
+                    evaluacionMensual.Grasa = float.Parse(reader[6].ToString());
+                    evaluacionMensual.Comentarios = reader[7].ToString();
+
+                    evaluacionMensuals.Add(evaluacionMensual);
                 }
             }
             catch (Exception ex)
@@ -48,21 +55,21 @@ namespace GymAPI.Controllers
                 connection.Close();
             }
 
-            return categorias;
+            return evaluacionMensuals;
         }
 
         // GET api/<AdminController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Categoria>> Get(int id)
+        public async Task<ActionResult<EvaluacionMensual>> Get(int id)
         {
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = $"SELECT * FROM Categoria WHERE ID = {id};";
+            string sql = $"SELECT * FROM EvaluacionMensual WHERE ID = {id};";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
             SqlDataReader reader;
 
-            Categoria categoria = new Categoria();
+            EvaluacionMensual evaluacionMensual = new EvaluacionMensual();
             connection.Open();
             try
             {
@@ -70,9 +77,16 @@ namespace GymAPI.Controllers
                 if (reader.Read())
                 {
                     connection.Close();
-                    categoria.ID = int.Parse(reader[0].ToString());
-                    categoria.Nombre = reader[1].ToString();
-                    return categoria;
+                    evaluacionMensual = new EvaluacionMensual();
+                    evaluacionMensual.ID = int.Parse(reader[0].ToString());
+                    evaluacionMensual.IDCliente = int.Parse(reader[1].ToString());
+                    evaluacionMensual.IDMes = int.Parse(reader[2].ToString());
+                    evaluacionMensual.Calorias = int.Parse(reader[3].ToString());
+                    evaluacionMensual.Altura = float.Parse(reader[4].ToString());
+                    evaluacionMensual.Peso = float.Parse(reader[5].ToString());
+                    evaluacionMensual.Grasa = float.Parse(reader[6].ToString());
+                    evaluacionMensual.Comentarios = reader[7].ToString();
+                    return evaluacionMensual;
                 }
                 else
                 {
@@ -89,12 +103,20 @@ namespace GymAPI.Controllers
 
         // POST api/<AdminController>
         [HttpPost]
-        public async Task<ActionResult<Categoria>> Post(Categoria categoria)
+        public async Task<ActionResult<EvaluacionMensual>> Post(EvaluacionMensual evaluacionMensual)
         {
-
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = $"INSERT INTO CATEGORIA VALUES('{categoria.Nombre}');";
+            string sql = $"INSERT INTO EvaluacionMensual " +
+                $"VALUES(" +
+                $"{evaluacionMensual.IDCliente}, " +
+                $"{evaluacionMensual.IDMes}, " +
+                $"{evaluacionMensual.Calorias}, " +
+                $"{evaluacionMensual.Altura}, " +
+                $"{evaluacionMensual.Peso}, " +
+                $"{evaluacionMensual.Grasa}, " +
+                $"'{evaluacionMensual.Comentarios}'" +
+                $");";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
 
@@ -113,13 +135,21 @@ namespace GymAPI.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
         [HttpPut]
-        public async Task<ActionResult<Categoria>> Put(Categoria categoria)
+        public async Task<ActionResult<EvaluacionMensual>> Put(EvaluacionMensual evaluacionMensual)
         {
-        
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = $"UPDATE CATEGORIA SET Nombre = '{categoria.Nombre}' WHERE ID = {categoria.ID};";
+            string sql = $"UPDATE EvaluacionMensual SET " +
+                $"IDCliente = {evaluacionMensual.IDCliente}, " +
+                $"IDMes = {evaluacionMensual.IDMes}, " +
+                $"Calorias = {evaluacionMensual.Calorias}, " +
+                $"Altura = {evaluacionMensual.Altura}, " +
+                $"Peso = {evaluacionMensual.Peso}, " +
+                $"Grasa = {evaluacionMensual.Grasa}, " +
+                $"Comentarios = '{evaluacionMensual.Comentarios}' " +
+                $"WHERE ID = {evaluacionMensual.ID};";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
 
@@ -140,11 +170,11 @@ namespace GymAPI.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult<Categoria>> Delete(int ID)
+        public async Task<ActionResult<EvaluacionMensual>> Delete(int ID)
         {
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = $"DELETE FROM Categoria WHERE ID = {ID};";
+            string sql = $"DELETE FROM EvaluacionMensual WHERE ID = {ID};";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
 

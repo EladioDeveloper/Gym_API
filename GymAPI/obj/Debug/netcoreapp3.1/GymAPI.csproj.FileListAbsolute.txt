@@ -27,3 +27,7 @@ D:\OneDrive - INTEC\Trimestre #9\Base de datos I\Proyecto Final\Gym_API\GymAPI\b
 D:\OneDrive - INTEC\Trimestre #9\Base de datos I\Proyecto Final\Gym_API\GymAPI\bin\Debug\netcoreapp3.1\Swashbuckle.AspNetCore.Swagger.dll
 D:\OneDrive - INTEC\Trimestre #9\Base de datos I\Proyecto Final\Gym_API\GymAPI\bin\Debug\netcoreapp3.1\Swashbuckle.AspNetCore.SwaggerGen.dll
 D:\OneDrive - INTEC\Trimestre #9\Base de datos I\Proyecto Final\Gym_API\GymAPI\bin\Debug\netcoreapp3.1\Swashbuckle.AspNetCore.SwaggerUI.dll
+D:\OneDrive - INTEC\Trimestre #9\Base de datos I\Proyecto Final\Gym_API\GymAPI\bin\Debug\netcoreapp3.1\BCrypt.Net-Core.dll
+D:\OneDrive - INTEC\Trimestre #9\Base de datos I\Proyecto Final\Gym_API\GymAPI\obj\Debug\netcoreapp3.1\GymAPI.csproj.CoreCompileInputs.cache
+D:\OneDrive - INTEC\Trimestre #9\Base de datos I\Proyecto Final\Gym_API\GymAPI\obj\Debug\netcoreapp3.1\GymAPI.MvcApplicationPartsAssemblyInfo.cs
+D:\OneDrive - INTEC\Trimestre #9\Base de datos I\Proyecto Final\Gym_API\GymAPI\obj\Debug\netcoreapp3.1\GymAPI.MvcApplicationPartsAssemblyInfo.cache

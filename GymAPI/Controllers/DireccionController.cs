@@ -13,30 +13,32 @@ namespace GymAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoriaController : ControllerBase
+    public class DireccionController : ControllerBase
     {
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Categoria>>> Get()
+        public async Task<ActionResult<IEnumerable<Direccion>>> Get()
         {
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = "SELECT ID, Nombre FROM Categorias;";
+            string sql = "SELECT * FROM Direccion;";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
             SqlDataReader reader;
             connection.Open();
 
-            List<Categoria> categorias = new List<Categoria>();
+            List<Direccion> direcciones = new List<Direccion>();
             try
             {
                 reader = await cmd.ExecuteReaderAsync();
-                Categoria categoria;
+                Direccion direccion;
                 while (reader.Read())
                 {
-                    categoria = new Categoria();
-                    categoria.ID = int.Parse(reader[0].ToString());
-                    categoria.Nombre = reader[1].ToString();
-                    categorias.Add(categoria);
+                    direccion = new Direccion();
+                    direccion.ID = int.Parse(reader[0].ToString());
+                    direccion.IDSector = int.Parse(reader[1].ToString());
+                    direccion.Dir = reader[2].ToString();
+
+                    direcciones.Add(direccion);
                 }
             }
             catch (Exception ex)
@@ -48,21 +50,21 @@ namespace GymAPI.Controllers
                 connection.Close();
             }
 
-            return categorias;
+            return direcciones;
         }
 
         // GET api/<AdminController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Categoria>> Get(int id)
+        public async Task<ActionResult<Direccion>> Get(int id)
         {
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = $"SELECT * FROM Categoria WHERE ID = {id};";
+            string sql = $"SELECT * FROM Direccion WHERE ID = {id};";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
             SqlDataReader reader;
 
-            Categoria categoria = new Categoria();
+            Direccion direccion= new Direccion();
             connection.Open();
             try
             {
@@ -70,9 +72,10 @@ namespace GymAPI.Controllers
                 if (reader.Read())
                 {
                     connection.Close();
-                    categoria.ID = int.Parse(reader[0].ToString());
-                    categoria.Nombre = reader[1].ToString();
-                    return categoria;
+                    direccion.ID = int.Parse(reader[0].ToString());
+                    direccion.IDSector = int.Parse(reader[1].ToString());
+                    direccion.Dir = reader[2].ToString();
+                    return direccion;
                 }
                 else
                 {
@@ -89,12 +92,16 @@ namespace GymAPI.Controllers
 
         // POST api/<AdminController>
         [HttpPost]
-        public async Task<ActionResult<Categoria>> Post(Categoria categoria)
+        public async Task<ActionResult<Direccion>> Post(Direccion direccion)
         {
 
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = $"INSERT INTO CATEGORIA VALUES('{categoria.Nombre}');";
+            string sql = $"INSERT INTO DIRECCION " +
+                $"VALUES(" +
+                $"{direccion.IDSector}, " +
+                $"{direccion.Dir}" +
+                $");";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
 
@@ -113,13 +120,16 @@ namespace GymAPI.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
         [HttpPut]
-        public async Task<ActionResult<Categoria>> Put(Categoria categoria)
+        public async Task<ActionResult<Direccion>> Put(Direccion direccion)
         {
-        
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = $"UPDATE CATEGORIA SET Nombre = '{categoria.Nombre}' WHERE ID = {categoria.ID};";
+            string sql = $"UPDATE DIRECCION SET " +
+                $"IDSector = '{direccion.IDSector}', " +
+                $"Dir = '{direccion.Dir}' " +
+                $"WHERE ID = {direccion.ID};";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
 
@@ -140,11 +150,11 @@ namespace GymAPI.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult<Categoria>> Delete(int ID)
+        public async Task<ActionResult<Direccion>> Delete(int ID)
         {
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = $"DELETE FROM Categoria WHERE ID = {ID};";
+            string sql = $"DELETE FROM Direccion WHERE ID = {ID};";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
 

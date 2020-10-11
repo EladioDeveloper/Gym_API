@@ -121,7 +121,10 @@ namespace GymAPI.Controllers
 
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = $"UPDATE CIUDAD SET IDProvincia = {ciudad.IDProvincia}, Nombre = '{ciudad.Nombre}' WHERE ID = {ciudad.ID};";
+            string sql = $"UPDATE CIUDAD SET " +
+                $"IDProvincia = {ciudad.IDProvincia}, " +
+                $"Nombre = '{ciudad.Nombre}' " +
+                $"WHERE ID = {ciudad.ID};";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
 

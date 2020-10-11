@@ -13,30 +13,34 @@ namespace GymAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoriaController : ControllerBase
+    public class PlanMembresiaController : ControllerBase
     {
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Categoria>>> Get()
+        public async Task<ActionResult<IEnumerable<PlanMembresia>>> Get()
         {
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = "SELECT ID, Nombre FROM Categorias;";
+            string sql = "SELECT * FROM PlanMembresia;";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
             SqlDataReader reader;
             connection.Open();
 
-            List<Categoria> categorias = new List<Categoria>();
+            List<PlanMembresia> planMembresias = new List<PlanMembresia>();
             try
             {
                 reader = await cmd.ExecuteReaderAsync();
-                Categoria categoria;
+                PlanMembresia planMembresia;
                 while (reader.Read())
                 {
-                    categoria = new Categoria();
-                    categoria.ID = int.Parse(reader[0].ToString());
-                    categoria.Nombre = reader[1].ToString();
-                    categorias.Add(categoria);
+                    planMembresia = new PlanMembresia();
+                    planMembresia.ID = int.Parse(reader[0].ToString());
+                    planMembresia.Nombre = reader[1].ToString();
+                    planMembresia.Descripcion = reader[2].ToString();
+                    planMembresia.TiempoValidez = int.Parse(reader[3].ToString());
+                    planMembresia.Monto = float.Parse(reader[4].ToString());
+                    planMembresia.Estado = Convert.ToBoolean(reader[5].ToString());
+                    planMembresias.Add(planMembresia);
                 }
             }
             catch (Exception ex)
@@ -48,21 +52,21 @@ namespace GymAPI.Controllers
                 connection.Close();
             }
 
-            return categorias;
+            return planMembresias;
         }
 
         // GET api/<AdminController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Categoria>> Get(int id)
+        public async Task<ActionResult<PlanMembresia>> Get(int id)
         {
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = $"SELECT * FROM Categoria WHERE ID = {id};";
+            string sql = $"SELECT * FROM PlanMembresia WHERE ID = {id};";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
             SqlDataReader reader;
 
-            Categoria categoria = new Categoria();
+            PlanMembresia planMembresia = new PlanMembresia();
             connection.Open();
             try
             {
@@ -70,9 +74,13 @@ namespace GymAPI.Controllers
                 if (reader.Read())
                 {
                     connection.Close();
-                    categoria.ID = int.Parse(reader[0].ToString());
-                    categoria.Nombre = reader[1].ToString();
-                    return categoria;
+                    planMembresia.ID = int.Parse(reader[0].ToString());
+                    planMembresia.Nombre = reader[1].ToString();
+                    planMembresia.Descripcion = reader[2].ToString();
+                    planMembresia.TiempoValidez = int.Parse(reader[3].ToString());
+                    planMembresia.Monto = float.Parse(reader[4].ToString());
+                    planMembresia.Estado = Convert.ToBoolean(reader[5].ToString());
+                    return planMembresia;
                 }
                 else
                 {
@@ -89,12 +97,18 @@ namespace GymAPI.Controllers
 
         // POST api/<AdminController>
         [HttpPost]
-        public async Task<ActionResult<Categoria>> Post(Categoria categoria)
+        public async Task<ActionResult<PlanMembresia>> Post(PlanMembresia planMembresia)
         {
 
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = $"INSERT INTO CATEGORIA VALUES('{categoria.Nombre}');";
+            string sql = $"INSERT INTO PlanMembresia VALUES(" +
+                $"'{planMembresia.Nombre}', " +
+                $"'{planMembresia.Descripcion}', " +
+                $"{planMembresia.TiempoValidez}, " +
+                $"{planMembresia.Monto}, " +
+                $"{planMembresia.Estado}" +
+                $");";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
 
@@ -114,12 +128,18 @@ namespace GymAPI.Controllers
             }
         }
         [HttpPut]
-        public async Task<ActionResult<Categoria>> Put(Categoria categoria)
+        public async Task<ActionResult<PlanMembresia>> Put(PlanMembresia planMembresia)
         {
-        
+
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = $"UPDATE CATEGORIA SET Nombre = '{categoria.Nombre}' WHERE ID = {categoria.ID};";
+            string sql = $"UPDATE PlanMembresia SET " +
+                $"Nombre = '{planMembresia.Nombre}', " +
+                $"Descripcion = '{planMembresia.Descripcion}'," +
+                $"TiempoValidez = {planMembresia.TiempoValidez}, " +
+                $"Monto = {planMembresia.Monto}, " +
+                $"Estado = {planMembresia.Estado} " +
+                $"WHERE ID = {planMembresia.ID};";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
 
@@ -140,11 +160,11 @@ namespace GymAPI.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult<Categoria>> Delete(int ID)
+        public async Task<ActionResult<PlanMembresia>> Delete(int ID)
         {
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = $"DELETE FROM Categoria WHERE ID = {ID};";
+            string sql = $"DELETE FROM PlanMembresia WHERE ID = {ID};";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
 

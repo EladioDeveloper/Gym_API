@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Gym_API.Models
+namespace GymAPI.Models
 {
     public class Admin
     {

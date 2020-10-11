@@ -8,7 +8,7 @@ namespace GymAPI.Models
     public class Sector
     {
         public int ID { get; set; }
-        public int IDCiuddad { get; set; }
+        public int IDCiudad { get; set; }
         public string Nombre { get; set; }
     }
 }

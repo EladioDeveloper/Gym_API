@@ -13,30 +13,31 @@ namespace GymAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoriaController : ControllerBase
+    public class EjercicioRutinaController : ControllerBase
     {
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Categoria>>> Get()
+        public async Task<ActionResult<IEnumerable<EjercicioRutina>>> Get()
         {
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = "SELECT ID, Nombre FROM Categorias;";
+            string sql = "SELECT * FROM EjercicioRutina;";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
             SqlDataReader reader;
             connection.Open();
 
-            List<Categoria> categorias = new List<Categoria>();
+            List<EjercicioRutina> ejercicioRutinas = new List<EjercicioRutina>();
             try
             {
                 reader = await cmd.ExecuteReaderAsync();
-                Categoria categoria;
+                EjercicioRutina ejercicioRutina;
                 while (reader.Read())
                 {
-                    categoria = new Categoria();
-                    categoria.ID = int.Parse(reader[0].ToString());
-                    categoria.Nombre = reader[1].ToString();
-                    categorias.Add(categoria);
+                    ejercicioRutina = new EjercicioRutina();
+                    ejercicioRutina.ID = int.Parse(reader[0].ToString());
+                    ejercicioRutina.IDCategoria = int.Parse(reader[1].ToString());
+                    ejercicioRutina.Nombre = reader[2].ToString();
+                    ejercicioRutinas.Add(ejercicioRutina);
                 }
             }
             catch (Exception ex)
@@ -48,21 +49,21 @@ namespace GymAPI.Controllers
                 connection.Close();
             }
 
-            return categorias;
+            return ejercicioRutinas;
         }
 
         // GET api/<AdminController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Categoria>> Get(int id)
+        public async Task<ActionResult<EjercicioRutina>> Get(int id)
         {
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = $"SELECT * FROM Categoria WHERE ID = {id};";
+            string sql = $"SELECT * FROM EjercicioRutina WHERE ID = {id};";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
             SqlDataReader reader;
 
-            Categoria categoria = new Categoria();
+            EjercicioRutina ejercicioRutina = new EjercicioRutina();
             connection.Open();
             try
             {
@@ -70,9 +71,10 @@ namespace GymAPI.Controllers
                 if (reader.Read())
                 {
                     connection.Close();
-                    categoria.ID = int.Parse(reader[0].ToString());
-                    categoria.Nombre = reader[1].ToString();
-                    return categoria;
+                    ejercicioRutina.ID = int.Parse(reader[0].ToString());
+                    ejercicioRutina.IDCategoria = int.Parse(reader[1].ToString());
+                    ejercicioRutina.Nombre = reader[2].ToString();
+                    return ejercicioRutina;
                 }
                 else
                 {
@@ -89,12 +91,13 @@ namespace GymAPI.Controllers
 
         // POST api/<AdminController>
         [HttpPost]
-        public async Task<ActionResult<Categoria>> Post(Categoria categoria)
+        public async Task<ActionResult<EjercicioRutina>> Post(EjercicioRutina ejercicioRutina)
         {
-
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = $"INSERT INTO CATEGORIA VALUES('{categoria.Nombre}');";
+            string sql = $"INSERT INTO EjerciciRutina " +
+                $"VALUES({ejercicioRutina.IDCategoria}," +
+                $"'{ejercicioRutina.Nombre}');";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
 
@@ -113,13 +116,16 @@ namespace GymAPI.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-        [HttpPut]
-        public async Task<ActionResult<Categoria>> Put(Categoria categoria)
-        {
         
+        [HttpPut]
+        public async Task<ActionResult<EjercicioRutina>> Put(EjercicioRutina ejercicioRutina)
+        {
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = $"UPDATE CATEGORIA SET Nombre = '{categoria.Nombre}' WHERE ID = {categoria.ID};";
+            string sql = $"UPDATE EjercicioRutina SET " +
+                $"IDCategoria = {ejercicioRutina.IDCategoria}, " +
+                $"Nombre = '{ejercicioRutina.Nombre}' " +
+                $"WHERE ID = {ejercicioRutina.ID};";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
 
@@ -140,11 +146,11 @@ namespace GymAPI.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult<Categoria>> Delete(int ID)
+        public async Task<ActionResult<EjercicioRutina>> Delete(int ID)
         {
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = $"DELETE FROM Categoria WHERE ID = {ID};";
+            string sql = $"DELETE FROM EjercicioRutina WHERE ID = {ID};";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
 

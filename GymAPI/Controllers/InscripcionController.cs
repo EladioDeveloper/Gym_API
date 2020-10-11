@@ -8,35 +8,40 @@ using GymAPI.Config;
 using GymAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace GymAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoriaController : ControllerBase
+    public class InscripcionController : ControllerBase
     {
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Categoria>>> Get()
+        public async Task<ActionResult<IEnumerable<Inscripcion>>> Get()
         {
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = "SELECT ID, Nombre FROM Categorias;";
+            string sql = "SELECT * FROM Inscripcion;";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
             SqlDataReader reader;
             connection.Open();
 
-            List<Categoria> categorias = new List<Categoria>();
+            List<Inscripcion> inscripcions = new List<Inscripcion>();
             try
             {
                 reader = await cmd.ExecuteReaderAsync();
-                Categoria categoria;
+                Inscripcion inscripcion;
                 while (reader.Read())
                 {
-                    categoria = new Categoria();
-                    categoria.ID = int.Parse(reader[0].ToString());
-                    categoria.Nombre = reader[1].ToString();
-                    categorias.Add(categoria);
+                    inscripcion = new Inscripcion();
+                    inscripcion.ID = int.Parse(reader[0].ToString());
+                    inscripcion.IDPlan = int.Parse(reader[1].ToString());
+                    inscripcion.FPago = Convert.ToDateTime(reader[2].ToString());
+                    inscripcion.FExpiracion = Convert.ToDateTime(reader[3].ToString());
+                    inscripcion.AutoRenovacion = Convert.ToBoolean(reader[4].ToString());
+
+                    inscripcions.Add(inscripcion);
                 }
             }
             catch (Exception ex)
@@ -48,21 +53,21 @@ namespace GymAPI.Controllers
                 connection.Close();
             }
 
-            return categorias;
+            return inscripcions;
         }
 
         // GET api/<AdminController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Categoria>> Get(int id)
+        public async Task<ActionResult<Inscripcion>> Get(int id)
         {
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = $"SELECT * FROM Categoria WHERE ID = {id};";
+            string sql = $"SELECT * FROM Inscripcion WHERE ID = {id};";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
             SqlDataReader reader;
 
-            Categoria categoria = new Categoria();
+            Inscripcion inscripcion = new Inscripcion();
             connection.Open();
             try
             {
@@ -70,9 +75,13 @@ namespace GymAPI.Controllers
                 if (reader.Read())
                 {
                     connection.Close();
-                    categoria.ID = int.Parse(reader[0].ToString());
-                    categoria.Nombre = reader[1].ToString();
-                    return categoria;
+                    inscripcion = new Inscripcion();
+                    inscripcion.ID = int.Parse(reader[0].ToString());
+                    inscripcion.IDPlan = int.Parse(reader[1].ToString());
+                    inscripcion.FPago = Convert.ToDateTime(reader[2].ToString());
+                    inscripcion.FExpiracion = Convert.ToDateTime(reader[3].ToString());
+                    inscripcion.AutoRenovacion = Convert.ToBoolean(reader[4].ToString());
+                    return inscripcion;
                 }
                 else
                 {
@@ -89,12 +98,17 @@ namespace GymAPI.Controllers
 
         // POST api/<AdminController>
         [HttpPost]
-        public async Task<ActionResult<Categoria>> Post(Categoria categoria)
+        public async Task<ActionResult<Inscripcion>> Post(Inscripcion inscripcion)
         {
-
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = $"INSERT INTO CATEGORIA VALUES('{categoria.Nombre}');";
+            string sql = $"INSERT INTO Inscripcion " +
+                $"VALUES(" +
+                $"{inscripcion.IDPlan}, " +
+                $"'{inscripcion.FPago}', " +
+                $"'{inscripcion.FExpiracion}', " +
+                $"{inscripcion.AutoRenovacion}, " +
+                $");";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
 
@@ -113,13 +127,18 @@ namespace GymAPI.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
         [HttpPut]
-        public async Task<ActionResult<Categoria>> Put(Categoria categoria)
+        public async Task<ActionResult<Inscripcion>> Put(Inscripcion inscripcion)
         {
-        
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = $"UPDATE CATEGORIA SET Nombre = '{categoria.Nombre}' WHERE ID = {categoria.ID};";
+            string sql = $"UPDATE Inscripcion SET " +
+                $"IDPlan = {inscripcion.IDPlan}, " +
+                $"FPago = '{inscripcion.FPago}', " +
+                $"FExpiracion = '{inscripcion.FExpiracion}', " +
+                $"AutoRenovacion = {inscripcion.AutoRenovacion}, " +
+                $"WHERE ID = {inscripcion.ID};";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
 
@@ -140,11 +159,11 @@ namespace GymAPI.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult<Categoria>> Delete(int ID)
+        public async Task<ActionResult<Inscripcion>> Delete(int ID)
         {
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = $"DELETE FROM Categoria WHERE ID = {ID};";
+            string sql = $"DELETE FROM Inscripcion WHERE ID = {ID};";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
 

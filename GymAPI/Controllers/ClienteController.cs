@@ -15,7 +15,6 @@ namespace GymAPI.Controllers
     [ApiController]
     public class ClienteController : ControllerBase
     {
-
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Cliente>>> Get()
         {
@@ -106,7 +105,101 @@ namespace GymAPI.Controllers
 
         }
 
+        [HttpPost]
+        public async Task<ActionResult<Cliente>> Post(Cliente cliente)
+        {
+            cliente.FRegistro = DateTime.Now;
 
-       
+            Connection conex = new Connection();
+            SqlConnection connection = new SqlConnection(conex.connectionString);
+            string sql = $"INSERT INTO CLIENTE VALUES(" +
+                $"{cliente.IDRutina}, " +
+                $"{cliente.IDDireccion}, " +
+                $"{cliente.IDInscripcion}, " +
+                $"'{cliente.Nombre}', " +
+                $"'{cliente.Apellido}', " +
+                $"'{cliente.Telefono}', " +
+                $"'{cliente.Email}', " +
+                $"'{cliente.FNacimiento}', " +
+                $"'{cliente.FRegistro}');";
+            SqlCommand cmd = new SqlCommand(sql, connection);
+            cmd.CommandType = CommandType.Text;
+
+            connection.Open();
+            try
+            {
+                int x = await cmd.ExecuteNonQueryAsync();
+                if (x > 0)
+                    return StatusCode(200, "Se inserto correctamente");
+                else
+                    return StatusCode(501, "No se pudo registrar");
+            }
+            catch (Exception ex)
+            {
+                connection.Close();
+                return StatusCode(500, ex.Message);
+            }
+        }
+        
+        [HttpPut]
+        public async Task<ActionResult<Cliente>> Put(Cliente cliente)
+        {
+
+            Connection conex = new Connection();
+            SqlConnection connection = new SqlConnection(conex.connectionString);
+            string sql = $"UPDATE CLIENTE SET " +
+                $"IDRutina = {cliente.IDRutina}, " +
+                $"IDDireccion = {cliente.IDDireccion}, " +
+                $"IDInscripcion = {cliente.IDInscripcion}, " +
+                $"Nombre = '{cliente.Nombre}', " +
+                $"Apellido = '{cliente.Apellido}', " +
+                $"Telefono = '{cliente.Telefono}', " +
+                $"Email = '{cliente.Email}', " +
+                $"FNacimiento = '{cliente.FNacimiento}', " +
+                $"FRegistro = '{cliente.FRegistro}', " +
+                $"WHERE ID = {cliente.ID};";
+            SqlCommand cmd = new SqlCommand(sql, connection);
+            cmd.CommandType = CommandType.Text;
+
+            connection.Open();
+            try
+            {
+                int x = await cmd.ExecuteNonQueryAsync();
+                if (x > 0)
+                    return StatusCode(200, "Se modifico correctamente");
+                else
+                    return StatusCode(501, "No se pudo modificar");
+            }
+            catch (Exception ex)
+            {
+                connection.Close();
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult<Cliente>> Delete(int ID)
+        {
+            Connection conex = new Connection();
+            SqlConnection connection = new SqlConnection(conex.connectionString);
+            string sql = $"DELETE FROM Cliente WHERE ID = {ID};";
+            SqlCommand cmd = new SqlCommand(sql, connection);
+            cmd.CommandType = CommandType.Text;
+
+            connection.Open();
+            try
+            {
+                int x = await cmd.ExecuteNonQueryAsync();
+                if (x > 0)
+                    return StatusCode(200, "Se elimino correctamente");
+                else
+                    return StatusCode(501, "No se pudo eliminar");
+            }
+            catch (Exception ex)
+            {
+                connection.Close();
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }
