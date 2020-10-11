@@ -71,10 +71,10 @@ namespace GymAPI.Controllers
                 reader = await cmd.ExecuteReaderAsync();
                 if (reader.Read())
                 {
-                    connection.Close();
                     direccion.ID = int.Parse(reader[0].ToString());
                     direccion.IDSector = int.Parse(reader[1].ToString());
                     direccion.Dir = reader[2].ToString();
+                    connection.Close();
                     return direccion;
                 }
                 else

@@ -74,13 +74,13 @@ namespace GymAPI.Controllers
                 reader = await cmd.ExecuteReaderAsync();
                 if (reader.Read())
                 {
-                    connection.Close();
                     inscripcion = new Inscripcion();
                     inscripcion.ID = int.Parse(reader[0].ToString());
                     inscripcion.IDPlan = int.Parse(reader[1].ToString());
                     inscripcion.FPago = Convert.ToDateTime(reader[2].ToString());
                     inscripcion.FExpiracion = Convert.ToDateTime(reader[3].ToString());
                     inscripcion.AutoRenovacion = Convert.ToBoolean(reader[4].ToString());
+                    connection.Close();
                     return inscripcion;
                 }
                 else

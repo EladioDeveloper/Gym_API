@@ -70,10 +70,10 @@ namespace GymAPI.Controllers
                 reader = await cmd.ExecuteReaderAsync();
                 if (reader.Read())
                 {
-                    connection.Close();
                     ejercicioRutina.ID = int.Parse(reader[0].ToString());
                     ejercicioRutina.IDCategoria = int.Parse(reader[1].ToString());
                     ejercicioRutina.Nombre = reader[2].ToString();
+                    connection.Close();
                     return ejercicioRutina;
                 }
                 else

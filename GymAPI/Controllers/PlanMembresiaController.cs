@@ -73,13 +73,13 @@ namespace GymAPI.Controllers
                 reader = await cmd.ExecuteReaderAsync();
                 if (reader.Read())
                 {
-                    connection.Close();
                     planMembresia.ID = int.Parse(reader[0].ToString());
                     planMembresia.Nombre = reader[1].ToString();
                     planMembresia.Descripcion = reader[2].ToString();
                     planMembresia.TiempoValidez = int.Parse(reader[3].ToString());
                     planMembresia.Monto = float.Parse(reader[4].ToString());
                     planMembresia.Estado = Convert.ToBoolean(reader[5].ToString());
+                    connection.Close();
                     return planMembresia;
                 }
                 else

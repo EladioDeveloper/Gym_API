@@ -70,9 +70,9 @@ namespace GymAPI.Controllers
                 reader = await cmd.ExecuteReaderAsync();
                 if (reader.Read())
                 {
-                    connection.Close();
                     provincia.ID = int.Parse(reader[0].ToString());
                     provincia.Nombre = reader[1].ToString();
+                    connection.Close();
                     return provincia;
                 }
                 else

@@ -72,12 +72,12 @@ namespace GymAPI.Controllers
                 reader = await cmd.ExecuteReaderAsync();
                 if (reader.Read())
                 {
-                    connection.Close();
                     diaRutina.ID = int.Parse(reader[0].ToString());
                     diaRutina.IDDia = int.Parse(reader[1].ToString());
                     diaRutina.IDEjercicio = int.Parse(reader[2].ToString());
                     diaRutina.Repeticiones = int.Parse(reader[3].ToString());
                     diaRutina.Series = int.Parse(reader[4].ToString());
+                    connection.Close();
                     return diaRutina;
                 }
                 else

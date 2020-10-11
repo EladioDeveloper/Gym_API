@@ -76,7 +76,6 @@ namespace GymAPI.Controllers
                 reader = await cmd.ExecuteReaderAsync();
                 if (reader.Read())
                 {
-                    connection.Close();
                     evaluacionMensual = new EvaluacionMensual();
                     evaluacionMensual.ID = int.Parse(reader[0].ToString());
                     evaluacionMensual.IDCliente = int.Parse(reader[1].ToString());
@@ -86,6 +85,7 @@ namespace GymAPI.Controllers
                     evaluacionMensual.Peso = float.Parse(reader[5].ToString());
                     evaluacionMensual.Grasa = float.Parse(reader[6].ToString());
                     evaluacionMensual.Comentarios = reader[7].ToString();
+                    connection.Close();
                     return evaluacionMensual;
                 }
                 else

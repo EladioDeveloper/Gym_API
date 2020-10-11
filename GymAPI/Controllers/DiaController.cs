@@ -69,9 +69,9 @@ namespace GymAPI.Controllers
                 reader = await cmd.ExecuteReaderAsync();
                 if (reader.Read())
                 {
-                    connection.Close();
                     dia.ID = int.Parse(reader[0].ToString());
                     dia.Nombre = reader[1].ToString();
+                    connection.Close();
                     return dia;
                 }
                 else
