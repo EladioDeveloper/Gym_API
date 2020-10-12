@@ -22,7 +22,7 @@ namespace GymAPI.Controllers
         {
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = "SELECT ID, Nombre FROM Categorias;";
+            string sql = "SELECT * FROM Categoria";
             var t = new Categoria();
 
             if (!string.IsNullOrEmpty(filter))
