@@ -153,20 +153,20 @@ namespace GymAPI.Controllers
                     cliente.FRegistro = Convert.ToDateTime(reader[9].ToString());
                     connection.Close();
                     return cliente;
+                } else {
+                    connection.Close();
+                    return NotFound();
                 }
             }
-            catch 
-            {
+            catch(Exception ex) {
                 connection.Close();
-                return NotFound();
+                return StatusCode(500, ex.Message);
             }
+            
             finally
             {
                 connection.Close();
             }
-
-            Response.Headers.Add("Access-Control-Expose-Headers", "Content-Range");
-            return cliente;
 
         }
 

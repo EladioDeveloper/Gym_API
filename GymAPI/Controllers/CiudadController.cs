@@ -4,6 +4,8 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using GymAPI.Config;
 using GymAPI.Models;
 using Microsoft.AspNetCore.Http;
@@ -13,14 +15,69 @@ namespace GymAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CiudadController : ControllerBase
+    public class CiudadController : ControllerBase, IReactAdminController<Ciudad>
     {
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Ciudad>>> Get()
+        public async Task<ActionResult<IEnumerable<Ciudad>>> Get(string filter = "", string range = "", string sort = "")
         {
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = "SELECT * FROM Ciudad;";
+            string sql = "SELECT * FROM Ciudad";
+            var t = new Cliente();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                var filterVal = (JObject)JsonConvert.DeserializeObject(filter);
+                int i = 0;
+                foreach (var f in filterVal)
+                {
+                    if (t.GetType().GetProperty(f.Key).PropertyType == typeof(string))
+                    {
+                        if (i == 0) { 
+                            sql += $" where {f.Key} == '{f.Value}'";
+                        }
+                        else {
+                            sql += $" OR where {f.Key} == '{f.Value}'";
+                        }
+                            
+                    }
+                    else
+                    {
+                        if (i == 0) {
+                            sql += $" where {f.Key} == {f.Value}";
+                        }
+
+                        else {
+                            sql += $" OR where {f.Key} == {f.Value}";
+                        }
+                            
+                    }
+                    i += 1;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(sort))
+            {
+                var sortVal = JsonConvert.DeserializeObject<List<string>>(sort);
+                var condition = sortVal.First();
+                var order = sortVal.Last() == "ASC" ? "" : "descending";
+                sql += $" ORDER BY {condition} {order}";
+            }
+
+            var from = 0;
+            var to = 0;
+            if (!string.IsNullOrEmpty(range))
+            {
+                var rangeVal = JsonConvert.DeserializeObject<List<int>>(range);
+                from = rangeVal.First();
+                to = rangeVal.Last();
+                sql += $" OFFSET {from} ROWS FETCH NEXT {to - from + 1} ROWS ONLY";
+            }
+
+            sql += ";";
+
+            Console.WriteLine("Last SQL", sql);
+
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
             SqlDataReader reader;
@@ -49,16 +106,21 @@ namespace GymAPI.Controllers
                 connection.Close();
             }
 
+            var count = ciudades.Count();
+
+            Response.Headers.Add("Access-Control-Expose-Headers", "Content-Range");
+            Response.Headers.Add("Content-Range", $"{typeof(Cliente).Name.ToLower()} {from}-{to}/{count}");
+
             return ciudades;
         }
 
         // GET api/<AdminController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Ciudad>> Get(int id)
+        public async Task<ActionResult<Ciudad>> Get(int ID)
         {
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = $"SELECT * FROM Ciudad WHERE ID = {id};";
+            string sql = $"SELECT * FROM Ciudad WHERE ID = {ID};";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
             SqlDataReader reader;
@@ -74,6 +136,7 @@ namespace GymAPI.Controllers
                     ciudad.IDProvincia = int.Parse(reader[1].ToString());
                     ciudad.Nombre = reader[2].ToString();
                     connection.Close();
+                    Response.Headers.Add("Access-Control-Expose-Headers", "Content-Range");
                     return ciudad;
                 }
                 else
@@ -105,7 +168,7 @@ namespace GymAPI.Controllers
             {
                 int x = await cmd.ExecuteNonQueryAsync();
                 if (x > 0)
-                    return StatusCode(200, "Se inserto correctamente");
+                    return StatusCode(200, ciudad);
                 else
                     return StatusCode(501, "No se pudo registrar");
             }
@@ -115,9 +178,14 @@ namespace GymAPI.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-        [HttpPut]
-        public async Task<ActionResult<Ciudad>> Put(Ciudad ciudad)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int ID, Ciudad ciudad)
         {
+            var entityId = (int)typeof(Cliente).GetProperty("ID").GetValue(ciudad);
+            if (ID != entityId)
+            {
+                return BadRequest();
+            }
 
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
@@ -133,7 +201,7 @@ namespace GymAPI.Controllers
             {
                 int x = await cmd.ExecuteNonQueryAsync();
                 if (x > 0)
-                    return StatusCode(200, "Se modifico correctamente");
+                    return StatusCode(200, ciudad);
                 else
                     return StatusCode(501, "No se pudo modificar");
             }
@@ -144,7 +212,7 @@ namespace GymAPI.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<Ciudad>> Delete(int ID)
         {
             Connection conex = new Connection();
