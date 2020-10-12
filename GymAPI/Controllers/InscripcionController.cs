@@ -4,6 +4,8 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using GymAPI.Config;
 using GymAPI.Models;
 using Microsoft.AspNetCore.Http;
@@ -14,14 +16,68 @@ namespace GymAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class InscripcionController : ControllerBase
+    public class InscripcionController : ControllerBase, IReactAdminController<Inscripcion>
     {
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Inscripcion>>> Get()
+        public async Task<ActionResult<IEnumerable<Inscripcion>>> Get(string filter = "", string range = "", string sort = "")
         {
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = "SELECT * FROM Inscripcion;";
+            string sql = "SELECT * FROM Inscripcion";
+            var t = new Cliente();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                var filterVal = (JObject)JsonConvert.DeserializeObject(filter);
+                int i = 0;
+                foreach (var f in filterVal)
+                {
+                    if (t.GetType().GetProperty(f.Key).PropertyType == typeof(string))
+                    {
+                        if (i == 0) { 
+                            sql += $" where {f.Key} == '{f.Value}'";
+                        }
+                        else {
+                            sql += $" OR where {f.Key} == '{f.Value}'";
+                        }
+                            
+                    }
+                    else
+                    {
+                        if (i == 0) {
+                            sql += $" where {f.Key} == {f.Value}";
+                        }
+
+                        else {
+                            sql += $" OR where {f.Key} == {f.Value}";
+                        }
+                            
+                    }
+                    i += 1;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(sort))
+            {
+                var sortVal = JsonConvert.DeserializeObject<List<string>>(sort);
+                var condition = sortVal.First();
+                var order = sortVal.Last() == "ASC" ? "" : "descending";
+                sql += $" ORDER BY {condition} {order}";
+            }
+
+            var from = 0;
+            var to = 0;
+            if (!string.IsNullOrEmpty(range))
+            {
+                var rangeVal = JsonConvert.DeserializeObject<List<int>>(range);
+                from = rangeVal.First();
+                to = rangeVal.Last();
+                sql += $" OFFSET {from} ROWS FETCH NEXT {to - from + 1} ROWS ONLY";
+            }
+
+            sql += ";";
+
+            Console.WriteLine("Last SQL", sql);
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
             SqlDataReader reader;
@@ -53,16 +109,20 @@ namespace GymAPI.Controllers
                 connection.Close();
             }
 
-            return inscripcions;
+            var count = inscripcions.Count();
+
+            Response.Headers.Add("Access-Control-Expose-Headers", "Content-Range");
+            Response.Headers.Add("Content-Range", $"{typeof(Inscripcion).Name.ToLower()} {from}-{to}/{count}");
+           return inscripcions;
         }
 
         // GET api/<AdminController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Inscripcion>> Get(int id)
+        public async Task<ActionResult<Inscripcion>> Get(int ID)
         {
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = $"SELECT * FROM Inscripcion WHERE ID = {id};";
+            string sql = $"SELECT * FROM Inscripcion WHERE ID = {ID};";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
             SqlDataReader reader;
@@ -107,8 +167,7 @@ namespace GymAPI.Controllers
                 $"{inscripcion.IDPlan}, " +
                 $"'{inscripcion.FPago}', " +
                 $"'{inscripcion.FExpiracion}', " +
-                $"{inscripcion.AutoRenovacion}, " +
-                $");";
+                $"{inscripcion.AutoRenovacion});";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
 
@@ -117,7 +176,7 @@ namespace GymAPI.Controllers
             {
                 int x = await cmd.ExecuteNonQueryAsync();
                 if (x > 0)
-                    return StatusCode(200, "Se inserto correctamente");
+                    return StatusCode(200, inscripcion);
                 else
                     return StatusCode(501, "No se pudo registrar");
             }
@@ -128,16 +187,21 @@ namespace GymAPI.Controllers
             }
         }
 
-        [HttpPut]
-        public async Task<ActionResult<Inscripcion>> Put(Inscripcion inscripcion)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int ID, Inscripcion inscripcion)
         {
+            var entityId = (int)typeof(Cliente).GetProperty("ID").GetValue(inscripcion);
+            if (ID != entityId)
+            {
+                return BadRequest();
+            }
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
             string sql = $"UPDATE Inscripcion SET " +
                 $"IDPlan = {inscripcion.IDPlan}, " +
                 $"FPago = '{inscripcion.FPago}', " +
                 $"FExpiracion = '{inscripcion.FExpiracion}', " +
-                $"AutoRenovacion = {inscripcion.AutoRenovacion}, " +
+                $"AutoRenovacion = {inscripcion.AutoRenovacion} " +
                 $"WHERE ID = {inscripcion.ID};";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
@@ -147,7 +211,7 @@ namespace GymAPI.Controllers
             {
                 int x = await cmd.ExecuteNonQueryAsync();
                 if (x > 0)
-                    return StatusCode(200, "Se modifico correctamente");
+                    return StatusCode(200, inscripcion);
                 else
                     return StatusCode(501, "No se pudo modificar");
             }
@@ -158,7 +222,7 @@ namespace GymAPI.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<Inscripcion>> Delete(int ID)
         {
             Connection conex = new Connection();
