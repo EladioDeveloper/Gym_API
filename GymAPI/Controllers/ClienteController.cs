@@ -226,7 +226,7 @@ namespace GymAPI.Controllers
                 $"FNacimiento = '{cliente.FNacimiento}', " +
                 $"FRegistro = '{cliente.FRegistro}' " +
                 $"WHERE ID = {cliente.ID};";
-            Console.WriteLine(sql);
+
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
 
