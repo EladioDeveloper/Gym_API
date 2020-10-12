@@ -31,26 +31,32 @@ namespace GymAPI.Controllers
                 int i = 0;
                 foreach (var f in filterVal)
                 {
-                    if (t.GetType().GetProperty(f.Key).PropertyType == typeof(string))
+                    var valueArr = f.Value.ToArray();
+                    var valueString = valueArr[0].Value<string>();
+                    if (t.GetType().GetProperty(f.Key.ToUpper()).PropertyType == typeof(string))
                     {
-                        if (i == 0) { 
-                            sql += $" where {f.Key} == '{f.Value}'";
+                        if (i == 0)
+                        {
+                            sql += $" where {f.Key.ToUpper()} = '{valueString}'";
                         }
-                        else {
-                            sql += $" OR where {f.Key} == '{f.Value}'";
+                        else
+                        {
+                            sql += $" OR where {f.Key.ToUpper()} = '{valueString}'";
                         }
-                            
+
                     }
                     else
                     {
-                        if (i == 0) {
-                            sql += $" where {f.Key} == {f.Value}";
+                        if (i == 0)
+                        {
+                            sql += $" where {f.Key.ToUpper()} = {valueString}";
                         }
 
-                        else {
-                            sql += $" OR where {f.Key} == {f.Value}";
+                        else
+                        {
+                            sql += $" OR where {f.Key.ToUpper()} = {valueString}";
                         }
-                            
+
                     }
                     i += 1;
                 }
@@ -60,7 +66,7 @@ namespace GymAPI.Controllers
             {
                 var sortVal = JsonConvert.DeserializeObject<List<string>>(sort);
                 var condition = sortVal.First();
-                var order = sortVal.Last() == "ASC" ? "" : "descending";
+                var order = sortVal.Last() == "ASC" ? "" : "DESC";
                 sql += $" ORDER BY {condition} {order}";
             }
 
@@ -176,7 +182,7 @@ namespace GymAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int ID, Mes mes)
         {
-            var entityId = (int)typeof(Cliente).GetProperty("ID").GetValue(mes);
+            var entityId = (int)typeof(Mes).GetProperty("ID").GetValue(mes);
             if (ID != entityId)
             {
                 return BadRequest();
