@@ -109,7 +109,7 @@ namespace GymAPI.Controllers
             var count = categorias.Count();
 
             Response.Headers.Add("Access-Control-Expose-Headers", "Content-Range");
-            Response.Headers.Add("Content-Range", $"{typeof(Cliente).Name.ToLower()} {from}-{to}/{count}");
+            Response.Headers.Add("Content-Range", $"{typeof(Categoria).Name.ToLower()} {from}-{to}/{count}");
 
             return categorias;
         }

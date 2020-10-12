@@ -109,7 +109,7 @@ namespace GymAPI.Controllers
             var count = ciudades.Count();
 
             Response.Headers.Add("Access-Control-Expose-Headers", "Content-Range");
-            Response.Headers.Add("Content-Range", $"{typeof(Cliente).Name.ToLower()} {from}-{to}/{count}");
+            Response.Headers.Add("Content-Range", $"{typeof(Ciudad).Name.ToLower()} {from}-{to}/{count}");
 
             return ciudades;
         }
