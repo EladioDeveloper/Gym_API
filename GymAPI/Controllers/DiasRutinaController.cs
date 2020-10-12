@@ -202,7 +202,7 @@ namespace GymAPI.Controllers
                 $"IDDia = {diasRutina.IDDia}, " +
                 $"IDEjercicio = {diasRutina.IDEjercicio}, " +
                 $"Repeticiones = {diasRutina.Repeticiones}, " +
-                $"Series = {diasRutina.Series}, " +
+                $"Series = {diasRutina.Series} " +
                 $"WHERE ID = {diasRutina.ID};";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
