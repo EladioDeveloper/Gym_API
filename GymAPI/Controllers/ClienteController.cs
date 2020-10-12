@@ -55,7 +55,6 @@ namespace GymAPI.Controllers
                     }
                     i += 1;
                 }
-                Console.WriteLine("SQL QUERY:", sql);
             }
 
             if (!string.IsNullOrEmpty(sort))
