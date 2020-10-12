@@ -76,7 +76,7 @@ namespace GymAPI.Controllers
                     admin.ID = int.Parse(reader[0].ToString());
                     admin.Usuario = reader[1].ToString();
                     connection.Close();
-                    return admin;
+                    return Ok(admin);
                 }
                 else
                 {

@@ -1,0 +1,30 @@
+﻿<Properties StartupConfiguration="{D7389F43-CFC9-4E48-8FA8-86229A061378}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="GymAPI/Controllers/CategoriaController.cs">
+    <Files>
+      <File FileName="GymAPI/Controllers/ClienteController.cs" Line="1" Column="1" />
+      <File FileName="GymAPI/Controllers/CategoriaController.cs" Line="1" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="Gym_API" expanded="True">
+            <Node name="GymAPI" expanded="True">
+              <Node name="Config" expanded="True" />
+              <Node name="Controllers" expanded="True">
+                <Node name="CategoriaController.cs" selected="True" />
+              </Node>
+              <Node name="Models" expanded="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.GymAPI PreferredExecutionTarget="/Applications/Microsoft Edge.app" />
+</Properties>
