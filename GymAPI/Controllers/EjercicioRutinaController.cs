@@ -4,6 +4,8 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using GymAPI.Config;
 using GymAPI.Models;
 using Microsoft.AspNetCore.Http;
@@ -13,14 +15,68 @@ namespace GymAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EjercicioRutinaController : ControllerBase
+    public class EjercicioRutinaController : ControllerBase, IReactAdminController<EjercicioRutina>
     {
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<EjercicioRutina>>> Get()
+        public async Task<ActionResult<IEnumerable<EjercicioRutina>>> Get(string filter = "", string range = "", string sort = "")
         {
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = "SELECT * FROM EjercicioRutina;";
+            string sql = "SELECT * FROM EjercicioRutina";
+            var t = new Cliente();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                var filterVal = (JObject)JsonConvert.DeserializeObject(filter);
+                int i = 0;
+                foreach (var f in filterVal)
+                {
+                    if (t.GetType().GetProperty(f.Key).PropertyType == typeof(string))
+                    {
+                        if (i == 0) { 
+                            sql += $" where {f.Key} == '{f.Value}'";
+                        }
+                        else {
+                            sql += $" OR where {f.Key} == '{f.Value}'";
+                        }
+                            
+                    }
+                    else
+                    {
+                        if (i == 0) {
+                            sql += $" where {f.Key} == {f.Value}";
+                        }
+
+                        else {
+                            sql += $" OR where {f.Key} == {f.Value}";
+                        }
+                            
+                    }
+                    i += 1;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(sort))
+            {
+                var sortVal = JsonConvert.DeserializeObject<List<string>>(sort);
+                var condition = sortVal.First();
+                var order = sortVal.Last() == "ASC" ? "" : "descending";
+                sql += $" ORDER BY {condition} {order}";
+            }
+
+            var from = 0;
+            var to = 0;
+            if (!string.IsNullOrEmpty(range))
+            {
+                var rangeVal = JsonConvert.DeserializeObject<List<int>>(range);
+                from = rangeVal.First();
+                to = rangeVal.Last();
+                sql += $" OFFSET {from} ROWS FETCH NEXT {to - from + 1} ROWS ONLY";
+            }
+
+            sql += ";";
+
+            Console.WriteLine("Last SQL", sql);
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
             SqlDataReader reader;
@@ -49,7 +105,11 @@ namespace GymAPI.Controllers
                 connection.Close();
             }
 
-            return ejercicioRutinas;
+            var count = ejercicioRutinas.Count();
+
+            Response.Headers.Add("Access-Control-Expose-Headers", "Content-Range");
+            Response.Headers.Add("Content-Range", $"{typeof(EjercicioRutina).Name.ToLower()} {from}-{to}/{count}");
+           return ejercicioRutinas;
         }
 
         // GET api/<AdminController>/5
@@ -106,7 +166,7 @@ namespace GymAPI.Controllers
             {
                 int x = await cmd.ExecuteNonQueryAsync();
                 if (x > 0)
-                    return StatusCode(200, "Se inserto correctamente");
+                    return StatusCode(200, ejercicioRutina);
                 else
                     return StatusCode(501, "No se pudo registrar");
             }
@@ -117,9 +177,14 @@ namespace GymAPI.Controllers
             }
         }
         
-        [HttpPut]
-        public async Task<ActionResult<EjercicioRutina>> Put(EjercicioRutina ejercicioRutina)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int ID, EjercicioRutina ejercicioRutina)
         {
+            var entityId = (int)typeof(Cliente).GetProperty("ID").GetValue(ejercicioRutina);
+            if (ID != entityId)
+            {
+                return BadRequest();
+            }
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
             string sql = $"UPDATE EjercicioRutina SET " +
@@ -134,7 +199,7 @@ namespace GymAPI.Controllers
             {
                 int x = await cmd.ExecuteNonQueryAsync();
                 if (x > 0)
-                    return StatusCode(200, "Se modifico correctamente");
+                    return StatusCode(200, ejercicioRutina);
                 else
                     return StatusCode(501, "No se pudo modificar");
             }
@@ -145,7 +210,7 @@ namespace GymAPI.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<EjercicioRutina>> Delete(int ID)
         {
             Connection conex = new Connection();
