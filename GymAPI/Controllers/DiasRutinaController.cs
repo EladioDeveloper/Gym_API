@@ -97,10 +97,11 @@ namespace GymAPI.Controllers
                 {
                     diasRutina = new DiasRutina();
                     diasRutina.ID = int.Parse(reader[0].ToString());
-                    diasRutina.IDDia = int.Parse(reader[1].ToString());
-                    diasRutina.IDEjercicio = int.Parse(reader[2].ToString());
-                    diasRutina.Repeticiones = int.Parse(reader[3].ToString());
-                    diasRutina.Series = int.Parse(reader[4].ToString());
+                    diasRutina.IDRutina = int.Parse(reader[1].ToString());
+                    diasRutina.IDDia = int.Parse(reader[2].ToString());
+                    diasRutina.IDEjercicio = int.Parse(reader[3].ToString());
+                    diasRutina.Repeticiones = int.Parse(reader[4].ToString());
+                    diasRutina.Series = int.Parse(reader[5].ToString());
                     diasRutinas.Add(diasRutina);
                 }
             }

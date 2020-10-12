@@ -1,31 +1,31 @@
 ﻿<Properties StartupConfiguration="{D7389F43-CFC9-4E48-8FA8-86229A061378}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="GymAPI/Controllers/SectorController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="GymAPI/Controllers/ProvinciaController.cs">
     <Files>
-      <File FileName="GymAPI/Controllers/ProvinciaController.cs" Line="29" Column="13" />
-      <File FileName="GymAPI/Models/Provincia.cs" Line="8" Column="18" />
-      <File FileName="GymAPI/Controllers/AdminController.cs" Line="1" Column="1" />
-      <File FileName="GymAPI/Controllers/CategoriaController.cs" Line="63" Column="14" />
-      <File FileName="GymAPI/Controllers/CiudadController.cs" Line="63" Column="14" />
-      <File FileName="GymAPI/Controllers/ClienteController.cs" Line="64" Column="14" />
-      <File FileName="GymAPI/Controllers/DiaController.cs" Line="63" Column="14" />
-      <File FileName="GymAPI/Controllers/DiasRutinaController.cs" Line="63" Column="14" />
-      <File FileName="GymAPI/Controllers/DireccionController.cs" Line="63" Column="14" />
-      <File FileName="GymAPI/Controllers/EjercicioRutinaController.cs" Line="63" Column="14" />
-      <File FileName="GymAPI/Controllers/EvaluacionMensualController.cs" Line="63" Column="14" />
-      <File FileName="GymAPI/Controllers/InscripcionController.cs" Line="64" Column="14" />
-      <File FileName="GymAPI/Controllers/MesController.cs" Line="63" Column="14" />
-      <File FileName="GymAPI/Controllers/PlanMembresiaController.cs" Line="63" Column="14" />
-      <File FileName="GymAPI/Controllers/RutinaController.cs" Line="63" Column="14" />
-      <File FileName="GymAPI/Controllers/SectorController.cs" Line="1" Column="1" />
+      <File FileName="GymAPI/Models/Categoria.cs" Line="1" Column="1" />
+      <File FileName="GymAPI/Models/Ciudad.cs" Line="1" Column="1" />
+      <File FileName="GymAPI/Models/Cliente.cs" Line="1" Column="1" />
+      <File FileName="GymAPI/Models/Dia.cs" Line="1" Column="1" />
+      <File FileName="GymAPI/Models/DiasRutina.cs" Line="1" Column="1" />
+      <File FileName="GymAPI/Models/Direccion.cs" Line="1" Column="1" />
+      <File FileName="GymAPI/Models/EjercicioRutina.cs" Line="1" Column="1" />
+      <File FileName="GymAPI/Models/EvaluacionMensual.cs" Line="1" Column="1" />
+      <File FileName="GymAPI/Models/Inscripcion.cs" Line="1" Column="1" />
+      <File FileName="GymAPI/Models/Mes.cs" Line="1" Column="1" />
+      <File FileName="GymAPI/Models/PlanMembresia.cs" Line="1" Column="1" />
+      <File FileName="GymAPI/Models/Provincia.cs" Line="1" Column="1" />
+      <File FileName="GymAPI/Models/Rutina.cs" Line="1" Column="1" />
+      <File FileName="GymAPI/Models/Sector.cs" Line="1" Column="1" />
+      <File FileName="GymAPI/Controllers/InscripcionController.cs" Line="226" Column="19" />
+      <File FileName="GymAPI/Controllers/PlanMembresiaController.cs" Line="184" Column="35" />
+      <File FileName="GymAPI/Controllers/ProvinciaController.cs" Line="182" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="Gym_API" expanded="True">
             <Node name="GymAPI" expanded="True">
-              <Node name="Config" expanded="True" />
               <Node name="Controllers" expanded="True">
-                <Node name="SectorController.cs" selected="True" />
+                <Node name="ProvinciaController.cs" selected="True" />
               </Node>
             </Node>
           </Node>
@@ -39,7 +39,9 @@
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/Users/chris/Documents/INTEC/TRIM9/Bases de datos/Proyecto-Final/Gym_API/GymAPI/Controllers/DiasRutinaController.cs" relfile="GymAPI/Controllers/DiasRutinaController.cs" line="165" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MultiItemStartupConfigurations />
   <MonoDevelop.Ide.ItemProperties.GymAPI PreferredExecutionTarget="/Applications/Microsoft Edge.app" />

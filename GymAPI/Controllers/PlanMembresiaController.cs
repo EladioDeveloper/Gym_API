@@ -165,6 +165,15 @@ namespace GymAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<PlanMembresia>> Post(PlanMembresia planMembresia)
         {
+            int intValue;
+            if (planMembresia.Estado == true)
+            {
+                intValue = 1;
+            }
+            else
+            {
+                intValue = 0;
+            }
 
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
@@ -173,7 +182,7 @@ namespace GymAPI.Controllers
                 $"'{planMembresia.Descripcion}', " +
                 $"{planMembresia.TiempoValidez}, " +
                 $"{planMembresia.Monto}, " +
-                $"{planMembresia.Estado});";
+                $"{intValue});";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
 
@@ -200,6 +209,16 @@ namespace GymAPI.Controllers
             {
                 return BadRequest();
             }
+            int intValue;
+            if (planMembresia.Estado == true)
+            {
+                intValue = 1;
+            }
+            else
+            {
+                intValue = 0;
+            }
+
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
             string sql = $"UPDATE PlanMembresia SET " +
@@ -207,7 +226,7 @@ namespace GymAPI.Controllers
                 $"Descripcion = '{planMembresia.Descripcion}'," +
                 $"TiempoValidez = {planMembresia.TiempoValidez}, " +
                 $"Monto = {planMembresia.Monto}, " +
-                $"Estado = {planMembresia.Estado} " +
+                $"Estado = {intValue} " +
                 $"WHERE ID = {planMembresia.ID};";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;

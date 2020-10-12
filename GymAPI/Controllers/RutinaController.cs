@@ -123,7 +123,7 @@ namespace GymAPI.Controllers
         {
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
-            string sql = $"SELECT * FROM Ciudad Rutina ID = {ID};";
+            string sql = $"SELECT * FROM Rutina where ID = {ID};";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
             SqlDataReader reader;

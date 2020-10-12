@@ -166,6 +166,14 @@ namespace GymAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Inscripcion>> Post(Inscripcion inscripcion)
         {
+            int intValue;
+            if (inscripcion.AutoRenovacion == true)
+            {
+                intValue = 1;
+            } else
+            {
+                intValue = 0;
+            }
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
             string sql = $"INSERT INTO Inscripcion " +
@@ -173,7 +181,7 @@ namespace GymAPI.Controllers
                 $"{inscripcion.IDPlan}, " +
                 $"'{inscripcion.FPago}', " +
                 $"'{inscripcion.FExpiracion}', " +
-                $"{inscripcion.AutoRenovacion});";
+                $"{intValue});";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
 
@@ -201,13 +209,22 @@ namespace GymAPI.Controllers
             {
                 return BadRequest();
             }
+            int intValue;
+            if (inscripcion.AutoRenovacion == true)
+            {
+                intValue = 1;
+            }
+            else
+            {
+                intValue = 0;
+            }
             Connection conex = new Connection();
             SqlConnection connection = new SqlConnection(conex.connectionString);
             string sql = $"UPDATE Inscripcion SET " +
                 $"IDPlan = {inscripcion.IDPlan}, " +
                 $"FPago = '{inscripcion.FPago}', " +
-                $"FExpiracion = '{inscripcion.FExpiracion}', " +
-                $"AutoRenovacion = {inscripcion.AutoRenovacion} " +
+                $"Expiracion = '{inscripcion.FExpiracion}', " +
+                $"AutoRenovacion = {intValue} " +
                 $"WHERE ID = {inscripcion.ID};";
             SqlCommand cmd = new SqlCommand(sql, connection);
             cmd.CommandType = CommandType.Text;
