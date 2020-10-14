@@ -11,7 +11,7 @@ namespace GymAPI.Config
         {
             get
             {
-                return "workstation id=s1.srvrs.msanchez.dev,15701;user id=sa;pwd=fcuGopMyuqkGZlyxmXFkgD0smzWafXfP;data source=s1.srvrs.msanchez.dev,15701;persist security info=false;initial catalog=Gym";
+                return "";
             }
         }
     }
